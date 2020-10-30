@@ -3,10 +3,13 @@ Given a string that contains parentheses, this program will detect any invalid o
 
 Example:
 ```golang
-solve("()") // true
-solve("(()") // false
-solve("())") // false
-solve("(())") // true
-solve("((((") // false
-solve(")(()") // true
+solve_without_order("()") // true
+solve_without_order("(()") // false
+solve_without_order(")())") // true
+solve_without_order("(())") // true
+
+solve_with_order("()") // true
+solve_with_order("(()") // false
+solve_with_order(")())") // false
+solve_with_order("(())") // true
 ```

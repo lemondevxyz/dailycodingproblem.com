@@ -1,14 +1,10 @@
 package main
 
 var cases_with_order = map[string]bool{
-	"()":     true,
-	"))":     false,
-	"((":     false,
-	"(())":   true,
-	"()) (":  false,
-	"() ()":  true,
-	"(char)": true,
-	")char(": false,
+	"()":   true,
+	"(()":  false,
+	")(()": false,
+	"(())": true,
 }
 
 func solve_with_order(str string) bool {

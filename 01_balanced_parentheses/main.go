@@ -5,44 +5,24 @@ import (
 	"os"
 )
 
-//	    map[have]want{}
-var cases = map[string]bool{
-	"()":   true,
-	"(()":  false,
-	"())":  false,
-	"(())": true,
-	"((((": false,
-	")(()": true,
-	// invalid case
-	// "(()))": true,
-}
-
 func main() {
-	for k, v := range cases {
-		if solve(k) != v {
+
+	fmt.Println("testing cases with order")
+	for k, v := range cases_with_order {
+		if solve_with_order(k) != v {
 			fmt.Printf("solve(\"%s\") != %t\n", k, v)
 			os.Exit(1)
 		}
 	}
-}
+	fmt.Println("success")
 
-func solve(str string) bool {
-
-	//var lindex, rindex = []int{}, []int{}
-	var lcount, rcount int
-
-	// for k, v := range str {
-	for _, v := range str {
-		if v == '(' {
-			//lindex = append(lindex, k)
-			lcount++
-		} else if v == ')' {
-			//rindex = append(rindex, k)
-			rcount++
+	fmt.Println("testing cases without order")
+	for k, v := range cases_without_order {
+		if solve_without_order(k) != v {
+			fmt.Printf("solve(\"%s\") != %t\n", k, v)
+			os.Exit(1)
 		}
 	}
+	fmt.Println("success")
 
-	//return len(lindex) == len(rindex)
-
-	return lcount == rcount
 }
