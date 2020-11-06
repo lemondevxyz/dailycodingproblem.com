@@ -1,0 +1,150 @@
+package main
+
+import (
+	"fmt"
+	"strings"
+	"time"
+)
+
+type Node struct {
+	IsFile   bool
+	Name     string
+	Children []*Node
+}
+
+const tabchar = rune(9)
+const tabstr = "\t"
+
+func count_tabs(str string) (tabcount int) {
+	for _, char := range str {
+		if char == tabchar {
+			tabcount++
+		}
+	}
+
+	return
+}
+
+// given dir\n\tsubdir1\n\t\tfile2.ext\n\tsubdir2\n\t\tfile.ext and \n\tsubdir1 and \n\tsubdir2
+// returns \n\tsubdir1\n\t\tfile2.ext
+func get_substr(str string, substr string, peek string) string {
+
+	start := strings.Index(str, substr)
+	end := strings.Index(str, peek)
+	if end == 0 {
+		end = len(str)
+	}
+
+	if start <= -1 {
+		start = 0
+	}
+
+	if end <= -1 {
+		end = 0
+	}
+
+	return str[start:end]
+}
+
+func get_path(str string) (p Node) {
+
+	p.Children = []*Node{}
+
+	sep := "\n"
+	split := strings.Split(str, sep)
+	fmt.Println(split)
+	time.Sleep(time.Millisecond * 100)
+
+	p.Name = str
+	// meaning there aren't any sub/directories
+	if len(split) == 0 {
+		return p
+	}
+
+	parent := split[0]
+	if i := strings.Index(parent, "."); i != -1 {
+		p.IsFile = true
+	}
+
+	p.Name = parent
+
+	wanttabs := count_tabs(parent)
+
+	split = strings.Split(str, "\n"+strings.Repeat(tabstr, wanttabs+1))
+	if len(split) > 0 {
+		split = split[1:]
+	} else {
+		// i.e no more
+		return p
+	}
+
+	if !p.IsFile {
+		for k, dir := range split {
+			// it's a child
+			if strings.HasPrefix(dir, tabstr) {
+				continue
+			}
+
+			havetabs := count_tabs(dir)
+			fmt.Println(havetabs, wanttabs)
+
+			if havetabs == wanttabs {
+				peek := ""
+
+				wanttabs = havetabs
+				next := k + 1
+
+				for ; next < len(split); next++ {
+					v := split[next]
+					if next < len(split) {
+						havetabs = count_tabs(v)
+						// same tab level
+						if havetabs == wanttabs {
+							peek = v
+							fmt.Println(v)
+							break
+						}
+					}
+				}
+
+				str = get_substr(str, dir, peek)
+				if len(str) > 0 {
+					newpath := get_path(str)
+					if len(newpath.Name) > 0 {
+						p.Children = append(p.Children, &newpath)
+					}
+				}
+			}
+		}
+
+	}
+
+	return p
+}
+
+func get_file(p Node) (arr []string) {
+
+	//base := strings.TrimSpace(p.Name)
+
+	return
+}
+
+func solve(str string) int {
+	p := get_path(str)
+	fmt.Println(p.Children, "ay")
+
+	for _, v := range get_file(p) {
+		fmt.Println(v)
+	}
+
+	return 0
+}
+
+func main() {
+
+	str := "dir\n\tsubdir1\n\t\tfile2.ext\n\tsubdir2\n\t\tfile.ext"
+
+	filename := solve(str)
+	fmt.Println(filename)
+
+}
