@@ -1,0 +1,65 @@
+package main
+
+import (
+	"fmt"
+)
+
+// returns arr with selected i only
+func filter(arr []int, param ...int) (ret []int) {
+	for _, v := range param {
+		if len(arr) > v {
+			ret = append(ret, arr[v])
+		}
+	}
+
+	return ret
+}
+
+func solve(set []int) [][]int {
+	result := [][]int{}
+
+	if len(set) == 0 {
+		return result
+	}
+
+	// how large should the slicee about
+	//last := 0
+
+	//done := []int{}
+	for i := 0; i < len(set); i++ {
+		for j := 0; j < len(set); j++ {
+			subset := []int{}
+			result = append(result, subset)
+		}
+	}
+
+	return result
+}
+
+// filter through slices of slices
+// for debugging mostly
+func filter_by_size(arr [][]int, size int) (ret [][]int) {
+	for _, v := range arr {
+		if len(v) == size {
+			ret = append(ret, v)
+		}
+	}
+
+	return
+}
+
+// OK
+// 1 | 2 | 3
+// 1,2 | 1,3 | 2,3
+// 1,2,3
+
+// a | b | c
+// a,b | a,c | b,c
+// a,b,c
+
+func main() {
+	arr := solve([]int{1, 2, 3})
+	ret := filter_by_size(arr, 2)
+	//fmt.Println(arr)
+	fmt.Println("ret", ret)
+}
