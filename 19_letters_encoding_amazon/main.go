@@ -1,148 +1,59 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
+	"strings"
 )
 
-type runlength string
-
-func isNumber(char byte) bool {
-	return char >= 48 && char <= 57
-}
-
-// O(2n)
-func (r *runlength) Decode() {
-
-	body := []byte(*r)
-	max := len(body)
-
-	numbers := []int{}
-
-	// first repeat the letters
-	for i := 0; i < max; i++ {
-
-		numbers = append(numbers, i)
-		char := body[i]
-
-		if isNumber(char) {
-			i++
-
-			// how many times to repeat the letter
-			repeat := int(char-48) - 1
-			// cause we already have a letter
-			v := body[i]
-
-			oldbyt := []byte{}
-
-			// [4, 3, 2, 1, 5, 6]
-			oldbyt = append(oldbyt, body...)
-
-			// repeat the letter
-			body = bytes.Repeat([]byte{v}, repeat)
-
-			if i == 0 {
-				body = append(body, oldbyt...)
-			} else if i+1 == len(oldbyt) {
-				body = append(oldbyt, body...)
-			} else {
-				if i >= len(oldbyt) {
-					i = len(oldbyt)
-				}
-
-				body = append(body, oldbyt[i:]...)
-
-				if i < len(oldbyt) {
-					body = append(oldbyt[:i], body...)
-				}
-				//fmt.Println(string(body))
-			}
-
-			i += repeat
-		}
-
-		max = len(body)
+func encode(str string) string {
+	if len(str) == 0 {
+		return str
 	}
 
-	result := []byte{}
-	// second remove the numbers
-	for _, v := range body {
-		if !isNumber(v) {
-			result = append(result, v)
+	cur := str[0]
+	occur := 0
+
+	newstr := ""
+
+	for i := 0; i < len(str); i++ {
+		v := str[i]
+		if v == cur {
+			occur++
+		} else {
+			newstr = newstr + fmt.Sprintf("%d%c", occur, cur)
+			occur = 1
+			cur = str[i]
 		}
 	}
+	// last piece
+	newstr = newstr + fmt.Sprintf("%d%c", occur, cur)
 
-	str := runlength(result)
-	*r = str
-
+	return newstr
 }
 
-func (r *runlength) Encode() {
+func decode(str string) string {
 
-	body := []byte(*r)
-	result := []byte{}
-
-	start := -1
-	for i := 0; i < len(body); i++ {
-		if i > 0 {
-			prev := i - 1
-			want, have := body[i], body[prev]
-			if want == have {
-				if start == -1 {
-					start = prev
-				}
-
-				if i+1 == len(body) {
-					have = byte(0)
-					i++
-				}
-			}
-
-			if want != have {
-				if start >= 0 {
-					repeat := len(body[start:i])
-
-					start := i - repeat
-					if start > len(body) {
-						start = len(body)
-					}
-
-					result = append(result, []byte{
-						byte(repeat + 48),
-						body[prev],
-					}...)
-
-				} else {
-					// special case for characters occurring once
-					result = append(result, []byte{
-						byte(49),
-						body[prev],
-					}...)
-				}
-
-				start = -1
-			}
+	// skip two
+	ret := ""
+	for i := 1; i < len(str); i = i + 2 {
+		occur := int(str[i-1] - 48)
+		// letter
+		if occur < 0 || occur > 9 {
+			i = i - 1
+			continue
 		}
+
+		char := str[i]
+		ret = ret + strings.Repeat(string(char), occur)
 	}
 
-	str := string(result)
-	*r = runlength(str)
-}
-
-func (r *runlength) String() string {
-	return string(*r)
-}
-
-func create(str string) *runlength {
-	v := runlength(str)
-	return &v
+	return ret
 }
 
 func main() {
-	r := create("4A3B2C1D2A")
-	r.Decode()
+	ori := "AAAABBBCC"
+	fmt.Println(ori, ":", encode(ori))
 
-	fmt.Println(r)
-	r.Encode()
-	fmt.Println(r)
+	ori = "6N9I1C0E"
+	fmt.Println(ori, ":", decode(ori))
 }
