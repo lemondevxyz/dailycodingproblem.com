@@ -1,0 +1,119 @@
+package main
+
+import "fmt"
+
+type Node struct {
+	val      string
+	Children []*Node
+}
+
+func (n *Node) String() string {
+	return "111"
+}
+
+func (n *Node) Dive(i int, fn func(int, *Node) bool) {
+	lev := i
+	if fn(lev, n) {
+		return
+	} else {
+		for _, v := range n.Children {
+			if fn(lev+1, v) {
+				return
+			}
+		}
+	}
+}
+
+func (n *Node) DiveLevel(i int, fn func(*Node)) {
+	n.Dive(0, func(lev int, n *Node) bool {
+		if lev > i {
+			return true
+		}
+
+		fn(n)
+
+		return false
+	})
+}
+
+func get_pos(str string, arr []string) int {
+	for k, v := range arr {
+		if v == str {
+			return k
+		}
+	}
+
+	return -1
+}
+
+func solve(fir []string, sec []string) string {
+	if len(fir) == 0 || len(sec) == 0 || len(sec) != len(fir) {
+		return ""
+	}
+
+	// creator of all
+	iseven := (len(fir) % 2) == 1
+	done := map[string]bool{}
+
+	god := &Node{
+		val:      "god",
+		Children: []*Node{},
+	}
+	if iseven {
+		god.val = sec[len(sec)/2]
+
+		done[god.val] = true
+	} else {
+		/*
+			mom := &Node{
+				val: sec[len(sec)/2],
+			}
+			dad := &Node{
+				val: sec[len(sec)/2-1],
+			}
+
+			done[mom.val] = true
+			done[dad.val] = true
+
+			god.Children = append(god.Children, mom)
+			god.Children = append(god.Children, dad)
+		*/
+		return ""
+	}
+
+	for _, v := range fir {
+		i := get_pos(v, sec)
+
+		_, ok := done[v]
+		if ok {
+			// parent
+			bef := i - 2
+			aft := i + 2
+
+			if aft >= 0 && aft < len(sec) {
+				god.Children = append(god.Children, &Node{
+					val: sec[bef],
+				})
+			}
+			if bef >= 0 && aft < len(sec) {
+				god.Children = append(god.Children, &Node{
+					val: sec[aft],
+				})
+			}
+		} else {
+			// child
+			fmt.Println(i, v)
+		}
+	}
+
+	return ""
+}
+
+func main() {
+
+	preorder := []string{"a", "b", "d", "e", "c", "f", "g"}
+	inorder := []string{"d", "b", "e", "a", "f", "c", "g"}
+
+	fmt.Println(solve(preorder, inorder))
+
+}
