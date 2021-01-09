@@ -1,0 +1,25 @@
+package main
+
+import "fmt"
+
+type matrix [][]int
+
+// given matrix, count how many possible ways you could go to bottom right.
+// you always start at top left
+func solve(size uint) uint {
+
+	max := int(size)
+	m := make(matrix, size)
+	for i := 0; i < max; i++ {
+		slice := make([]int, size)
+		matrix[i] = slice
+	}
+
+	limit := max - 1
+
+	return 0
+}
+
+func main() {
+	fmt.Println("2:", solve(2))
+}

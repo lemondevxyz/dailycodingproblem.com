@@ -1,0 +1,60 @@
+package main
+
+import "fmt"
+
+type matrix [][]bool
+
+func (m matrix) String() string {
+	str := ""
+	for _, s := range m {
+		for _, v := range s {
+			var num int
+			if v {
+				num = 1
+			}
+
+			str += fmt.Sprintf("%d ", num)
+		}
+		str += "\n"
+	}
+
+	return str
+}
+
+func newMatrix(size uint) matrix {
+	m := make(matrix, size)
+	for k := range m {
+		m[k] = make([]bool, size)
+	}
+
+	return m
+}
+
+func solve(m matrix) uint {
+	pow := len(m)
+	pow *= pow
+
+	max := len(m) - 1
+
+	x, y := 0, 0
+	for i := 0; i < pow; i++ {
+		if x != max {
+			x++
+		} else if x == max {
+			if x != y {
+				m[y][x] = true
+				y++
+			} else {
+				break
+			}
+		}
+
+		fmt.Println(x, y)
+	}
+
+	return 69
+}
+
+func main() {
+	fmt.Println(solve(newMatrix(2)))
+}
