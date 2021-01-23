@@ -10,6 +10,9 @@ func solve(n, x int) (count int) {
 				count++
 				break
 			}
+			if res > x {
+				break
+			}
 		}
 	}
 
@@ -17,5 +20,5 @@ func solve(n, x int) (count int) {
 }
 
 func main() {
-	fmt.Println(solve(6, 12))
+	fmt.Println("how many 12s in a 6x6 multiplication table: ", solve(6, 12))
 }
