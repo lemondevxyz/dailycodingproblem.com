@@ -5,7 +5,9 @@ import (
 )
 
 func exp(x int) int {
-	if x <= 1 { return 1 }
+	if x <= 1 {
+		return 1
+	}
 	return x * exp(x-1)
 }
 
@@ -19,13 +21,15 @@ func solve(s []int) [][]int {
 
 		i++
 		j++
-		
-		if j >= len(s) { i, j = 0, 1 }
+
+		if j >= len(s) {
+			i, j = 0, 1
+		}
 	}
-	
+
 	return ret
 }
 
 func main() {
-	fmt.Println(solve([]int{1, 2, 3}))
+	fmt.Println(solve([]int{1, 2, 3, 4}))
 }
